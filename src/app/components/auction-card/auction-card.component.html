@@ -1,0 +1,98 @@
+<article
+  class="auction-card"
+  [class.auction-card--hot]="isEndingSoon"
+  [class.auction-card--sold]="isSold"
+  [class.auction-card--ended]="isEnded"
+>
+  <a class="auction-card__media" [routerLink]="['/auction', auction.id]">
+    <img [src]="auction.imageUrl" [alt]="auction.title" />
+
+    <div class="auction-card__badges">
+      <span class="auction-card__badge auction-card__badge--live" *ngIf="canAct">● Live</span>
+      <span class="auction-card__badge auction-card__badge--hot" *ngIf="isEndingSoon">Končí brzy</span>
+      <span class="auction-card__badge auction-card__badge--sold" *ngIf="isSold">Prodáno</span>
+      <span class="auction-card__badge auction-card__badge--ended" *ngIf="isEnded && !isSold">Skončeno</span>
+    </div>
+
+    <div class="auction-card__timerPill">
+      ⏱ {{ timeLeftLabel }}
+    </div>
+  </a>
+
+  <div class="auction-card__body">
+    <div class="auction-card__topline">
+      <span>{{ auction.category }}</span>
+      <span>{{ conditionLabel }}</span>
+    </div>
+
+    <a class="auction-card__titleLink" [routerLink]="['/auction', auction.id]">
+      <h3>{{ auction.title }}</h3>
+    </a>
+
+    <p class="auction-card__subtitle">
+      {{ auction.subtitle || auction.description }}
+    </p>
+
+    <div class="auction-card__priceBox">
+      <span class="auction-card__muted">Aktuální cena</span>
+      <strong>{{ auctionService.formatMoney(auction.currentBid) }}</strong>
+      <div class="auction-card__progress">
+        <i [style.width.%]="progressPercent"></i>
+      </div>
+    </div>
+
+    <div class="auction-card__metaGrid">
+      <div>
+        <span>Příhozů</span>
+        <strong>{{ auction.bidsCount }}</strong>
+      </div>
+      <div>
+        <span>Sleduje</span>
+        <strong>{{ auction.watchers }}</strong>
+      </div>
+      <div>
+        <span>Min. další</span>
+        <strong>{{ minimumBidLabel }}</strong>
+      </div>
+    </div>
+
+    <div class="auction-card__seller">
+      <div class="auction-card__sellerAvatar">
+        {{ auction.seller.name.slice(0, 1) }}
+      </div>
+      <div>
+        <strong>{{ auction.seller.name }}</strong>
+        <span>
+          {{ auction.seller.location }} • ⭐ {{ auction.seller.rating }} %
+          <ng-container *ngIf="auction.seller.verified">• ověřeno</ng-container>
+        </span>
+      </div>
+    </div>
+
+    <app-bid-form
+      [auction]="auction"
+      (auctionChange)="onAuctionChange($event)"
+    ></app-bid-form>
+
+    <div class="auction-card__footer">
+      <a class="auction-card__detail" [routerLink]="['/auction', auction.id]">
+        Detail aukce
+      </a>
+
+      <button
+        type="button"
+        class="auction-card__buyNow"
+        *ngIf="auction.buyNowPrice && canAct"
+        [disabled]="buyNowBusy"
+        (click)="buyNow()"
+      >
+        <span *ngIf="buyNowBusy">Dokončuji…</span>
+        <span *ngIf="!buyNowBusy">Kup teď {{ buyNowPriceLabel }}</span>
+      </button>
+    </div>
+
+    <p class="auction-card__message" *ngIf="buyNowMessage">
+      {{ buyNowMessage }}
+    </p>
+  </div>
+</article>

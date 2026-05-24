@@ -12,6 +12,22 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
+/* TM_AUCTION_FEED_JSON_ENDPOINT_V1 */
+app.get('/auction-feed.json', (_req, res) => {
+  res.status(200).json({
+    source: 'trezzo-auctions',
+    type: 'auction-feed',
+    generatedAt: new Date().toISOString(),
+    items: [],
+    next: {
+      status: 'ready-for-backend-wire',
+      endpoint: '/api/auctions?status=ALL&limit=80',
+      cardType: 'auction',
+    },
+  });
+});
+/* /TM_AUCTION_FEED_JSON_ENDPOINT_V1 */
+
 /**
  * Example Express Rest API endpoints can be defined here.
  * Uncomment and define endpoints as necessary.
@@ -41,9 +57,7 @@ app.use(
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });
 

@@ -1,0 +1,260 @@
+.auction-feed-shell {
+  display: grid;
+  grid-template-columns: 310px minmax(0, 1fr);
+  gap: 20px;
+}
+
+.auction-feed__filters,
+.auction-feed__main {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 30px;
+  background: rgba(2, 6, 23, 0.42);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+}
+
+.auction-feed__filters {
+  align-self: start;
+  position: sticky;
+  top: 18px;
+  padding: 16px;
+}
+
+.auction-feed__panelHead {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.auction-feed__panelHead > span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 17px;
+  background: rgba(249, 115, 22, 0.16);
+}
+
+.auction-feed__panelHead strong,
+.auction-feed__panelHead small {
+  display: block;
+}
+
+.auction-feed__panelHead small {
+  margin-top: 2px;
+  color: #94a3b8;
+}
+
+.auction-feed__search {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.auction-feed__search span,
+.auction-feed__sort label {
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.auction-feed__search input,
+.auction-feed__sort select {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 16px;
+  outline: none;
+  background: rgba(15, 23, 42, 0.88);
+  color: #f8fafc;
+  padding: 0 13px;
+  font: inherit;
+  font-weight: 800;
+}
+
+.auction-feed__filterList {
+  display: grid;
+  gap: 8px;
+}
+
+.auction-feed__filter {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 18px;
+  background: rgba(248, 250, 252, 0.05);
+  color: #e2e8f0;
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.auction-feed__filterIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.auction-feed__filter strong,
+.auction-feed__filter small {
+  display: block;
+}
+
+.auction-feed__filter strong {
+  font-size: 13px;
+}
+
+.auction-feed__filter small {
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.auction-feed__filter.is-active {
+  border-color: rgba(249, 115, 22, 0.72);
+  background: rgba(249, 115, 22, 0.18);
+}
+
+.auction-feed__sort {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.auction-feed__reload {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 16px;
+  background: #f8fafc;
+  color: #020617;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.auction-feed__main {
+  padding: 16px;
+}
+
+.auction-feed__bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.auction-feed__bar strong,
+.auction-feed__bar span {
+  display: block;
+}
+
+.auction-feed__bar > div:first-child strong {
+  font-size: 20px;
+}
+
+.auction-feed__bar > div:first-child span {
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.auction-feed__stats {
+  display: flex;
+  gap: 8px;
+}
+
+.auction-feed__stats div {
+  min-width: 82px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px;
+  padding: 10px 12px;
+  background: rgba(248, 250, 252, 0.06);
+  text-align: center;
+}
+
+.auction-feed__stats strong {
+  font-size: 19px;
+  color: #f8fafc;
+}
+
+.auction-feed__stats span {
+  margin-top: 2px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.auction-feed {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.auction-feed__empty {
+  grid-column: 1 / -1;
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  border: 1px dashed rgba(148, 163, 184, 0.24);
+  border-radius: 24px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.auction-feed__empty strong,
+.auction-feed__empty span {
+  display: block;
+}
+
+.auction-feed__empty strong {
+  color: #f8fafc;
+}
+
+.auction-feed__empty span {
+  margin-top: 6px;
+}
+
+@media (max-width: 1180px) {
+  .auction-feed {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .auction-feed-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .auction-feed__filters {
+    position: static;
+  }
+}
+
+@media (max-width: 680px) {
+  .auction-feed {
+    grid-template-columns: 1fr;
+  }
+
+  .auction-feed__bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .auction-feed__stats {
+    width: 100%;
+  }
+
+  .auction-feed__stats div {
+    flex: 1;
+  }
+}

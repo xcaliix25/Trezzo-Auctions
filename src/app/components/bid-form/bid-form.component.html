@@ -1,0 +1,45 @@
+<form class="bid-form" (submit)="$event.preventDefault(); placeBid()">
+  <div class="bid-form__top">
+    <div>
+      <span>Minimální další příhoz</span>
+      <strong>{{ minimumBidLabel }}</strong>
+    </div>
+    <button type="button" class="bid-form__ghost" (click)="fillMinimum()">
+      Doplnit minimum
+    </button>
+  </div>
+
+  <label class="bid-form__field">
+    <span>Tvůj příhoz</span>
+    <input
+      type="number"
+      [min]="minimumBid"
+      [step]="auction.minIncrement || 100"
+      [(ngModel)]="bidAmount"
+      name="bidAmount"
+      placeholder="Zadej částku"
+      [disabled]="!canBid"
+    />
+  </label>
+
+  <div class="bid-form__quick">
+    <button type="button" (click)="increaseBid(1)" [disabled]="!canBid">
+      + {{ auctionService.formatMoney(auction.minIncrement || 100) }}
+    </button>
+    <button type="button" (click)="increaseBid(2)" [disabled]="!canBid">
+      + {{ auctionService.formatMoney((auction.minIncrement || 100) * 2) }}
+    </button>
+    <button type="button" (click)="increaseBid(5)" [disabled]="!canBid">
+      + {{ auctionService.formatMoney((auction.minIncrement || 100) * 5) }}
+    </button>
+  </div>
+
+  <button class="bid-form__submit" type="submit" [disabled]="!canBid">
+    <span *ngIf="busy">Ukládám příhoz…</span>
+    <span *ngIf="!busy">Přihodit {{ auctionService.formatMoney(bidAmount || minimumBid) }}</span>
+  </button>
+
+  <p class="bid-form__message" *ngIf="message">
+    {{ message }}
+  </p>
+</form>

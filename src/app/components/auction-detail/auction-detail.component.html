@@ -1,0 +1,141 @@
+<main class="auction-detail" *ngIf="auction as auction">
+  <a routerLink="/" class="auction-detail__back">← Zpět na aukce</a>
+
+  <section class="auction-detail__hero">
+    <div class="auction-detail__gallery">
+      <img [src]="auction.imageUrl" [alt]="auction.title" />
+
+      <div class="auction-detail__thumbs" *ngIf="gallery.length > 1">
+        <img
+          *ngFor="let item of gallery; trackBy: trackGallery"
+          [src]="item"
+          [alt]="auction.title"
+        />
+      </div>
+    </div>
+
+    <div class="auction-detail__summary">
+      <div class="auction-detail__badges">
+        <span>{{ auction.category }}</span>
+        <span>{{ auction.status }}</span>
+        <span>{{ auction.condition }}</span>
+      </div>
+
+      <h1>{{ auction.title }}</h1>
+      <p class="auction-detail__subtitle">{{ auction.subtitle || auction.description }}</p>
+
+      <div class="auction-detail__timer">
+        <span>Zbývá do konce</span>
+        <strong>{{ timeLeftLabel }}</strong>
+      </div>
+
+      <div class="auction-detail__price">
+        <div>
+          <small>Aktuální cena</small>
+          <strong>{{ auctionService.formatMoney(auction.currentBid) }}</strong>
+        </div>
+
+        <div>
+          <small>Min. další příhoz</small>
+          <strong>{{ minimumBidLabel }}</strong>
+        </div>
+
+        <div>
+          <small>Příhozů</small>
+          <strong>{{ auction.bidsCount }}</strong>
+        </div>
+      </div>
+
+      <div class="auction-detail__seller">
+        <div>
+          <small>Prodejce</small>
+          <strong>{{ auction.seller.name }}</strong>
+        </div>
+
+        <div>
+          <small>Lokalita</small>
+          <strong>{{ auction.seller.location }}</strong>
+        </div>
+
+        <div>
+          <small>Hodnocení</small>
+          <strong>{{ auction.seller.rating }}%</strong>
+        </div>
+      </div>
+
+      <app-bid-form
+        [auction]="auction"
+        (auctionChange)="onAuctionChange($event)"
+      ></app-bid-form>
+
+      <button
+        type="button"
+        class="auction-detail__buyNow"
+        *ngIf="auction.buyNowPrice && canAct"
+        [disabled]="buyNowBusy"
+        (click)="buyNow()"
+      >
+        <span *ngIf="buyNowBusy">Dokončuji nákup…</span>
+        <span *ngIf="!buyNowBusy">
+          ⚡ Kup teď {{ auctionService.formatMoney(auction.buyNowPrice) }}
+        </span>
+      </button>
+
+      <p class="auction-detail__message" *ngIf="message">{{ message }}</p>
+    </div>
+  </section>
+
+  <section class="auction-detail__content">
+    <article class="auction-detail__description">
+      <div class="auction-detail__panelHead">
+        <strong>Popis aukce</strong>
+        <span>Detail předmětu, stav a podmínky</span>
+      </div>
+
+      <p>{{ auction.description }}</p>
+
+      <div class="auction-detail__infoGrid">
+        <div>
+          <small>Doprava</small>
+          <strong>{{ auction.shipping.join(', ') || 'Dle domluvy' }}</strong>
+        </div>
+        <div>
+          <small>Platba</small>
+          <strong>{{ auction.payment.join(', ') || 'Dle domluvy' }}</strong>
+        </div>
+        <div>
+          <small>Sleduje</small>
+          <strong>{{ auction.watchers }}</strong>
+        </div>
+        <div>
+          <small>Zobrazení</small>
+          <strong>{{ auction.views }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <aside class="auction-detail__history">
+      <div class="auction-detail__panelHead">
+        <strong>Historie příhozů</strong>
+        <span>Poslední nejvyšší nabídky</span>
+      </div>
+
+      <div class="auction-detail__emptyBids" *ngIf="!auction.bidHistory.length">
+        Zatím žádný příhoz. Buď první.
+      </div>
+
+      <div
+        class="auction-detail__bid"
+        *ngFor="let bid of auction.bidHistory.slice().reverse(); trackBy: trackBid"
+        [class.is-winning]="bid.isWinning"
+      >
+        <div>
+          <strong>{{ bid.user }}</strong>
+          <small>{{ bid.createdAt | date:'dd.MM.yyyy HH:mm' }}</small>
+        </div>
+
+        <span>{{ auctionService.formatMoney(bid.amount) }}</span>
+      </div>
+    </aside>
+  </section>
+</main>

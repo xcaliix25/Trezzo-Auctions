@@ -1,0 +1,207 @@
+<section class="auction-editor">
+  <div class="auction-editor__head">
+    <div>
+      <p>Profesionální publikace aukce</p>
+      <h2>Vytvořit aukci</h2>
+      <span>
+        SSoT aukce: data se ukládají do backendu, feed a detail je čtou z jedné pravdy.
+      </span>
+    </div>
+    <strong>Aukro-like publish flow</strong>
+  </div>
+
+  <form class="auction-editor__form" (submit)="$event.preventDefault(); publishAuction()">
+    <section class="auction-editor__panel auction-editor__panel--wide">
+      <div class="auction-editor__panelHead">
+        <strong>1. Základ aukce</strong>
+        <span>Název, popis, kategorie a stav položky.</span>
+      </div>
+
+      <label class="auction-editor__field auction-editor__field--wide">
+        <span>Název aukce</span>
+        <input
+          [(ngModel)]="draft.title"
+          name="title"
+          maxlength="180"
+          placeholder="Např. PlayStation 5 Slim, 2 ovladače, záruka"
+        />
+      </label>
+
+      <label class="auction-editor__field auction-editor__field--wide">
+        <span>Krátký popis</span>
+        <input
+          [(ngModel)]="draft.subtitle"
+          name="subtitle"
+          maxlength="260"
+          placeholder="Stav, bonusy, hlavní výhoda"
+        />
+      </label>
+
+      <label class="auction-editor__field auction-editor__field--wide">
+        <span>Detailní popis</span>
+        <textarea
+          [(ngModel)]="draft.description"
+          name="description"
+          rows="5"
+          maxlength="12000"
+          placeholder="Popiš stav, obsah balení, pravidla aukce, vady, dopravu a platbu."
+        ></textarea>
+      </label>
+
+      <label class="auction-editor__field">
+        <span>Kategorie</span>
+        <select [(ngModel)]="draft.category" name="category">
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+      </label>
+
+      <label class="auction-editor__field">
+        <span>Stav</span>
+        <select [(ngModel)]="draft.condition" name="condition">
+          <option value="NEW">Nové</option>
+          <option value="LIKE_NEW">Jako nové</option>
+          <option value="USED">Použité</option>
+          <option value="DAMAGED">Poškozené / na díly</option>
+        </select>
+      </label>
+    </section>
+
+    <section class="auction-editor__panel">
+      <div class="auction-editor__panelHead">
+        <strong>2. Fotky a galerie</strong>
+        <span>Hlavní fotka + další URL po řádcích.</span>
+      </div>
+
+      <label class="auction-editor__field auction-editor__field--wide">
+        <span>Hlavní obrázek</span>
+        <input
+          [(ngModel)]="draft.imageUrl"
+          name="imageUrl"
+          placeholder="https://..."
+        />
+      </label>
+
+      <label class="auction-editor__field auction-editor__field--wide">
+        <span>Galerie obrázků</span>
+        <textarea
+          [(ngModel)]="draft.galleryText"
+          name="galleryText"
+          rows="5"
+          placeholder="Jedna URL na řádek. Max 12 obrázků."
+        ></textarea>
+      </label>
+
+      <div class="auction-editor__preview" *ngIf="primaryImageUrl">
+        <img [src]="primaryImageUrl" alt="" />
+        <div>
+          <strong>Náhled karty</strong>
+          <span>{{ galleryItems.length }} dalších obrázků</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="auction-editor__panel">
+      <div class="auction-editor__panelHead">
+        <strong>3. Cena a čas</strong>
+        <span>Vyvolávací cena, minimální příhoz, rezerva a Kup teď.</span>
+      </div>
+
+      <label class="auction-editor__field">
+        <span>Vyvolávací cena</span>
+        <input type="number" min="1" [(ngModel)]="draft.startingPrice" name="startingPrice" />
+      </label>
+
+      <label class="auction-editor__field">
+        <span>Minimální příhoz</span>
+        <input type="number" min="1" [(ngModel)]="draft.minIncrement" name="minIncrement" />
+      </label>
+
+      <label class="auction-editor__field">
+        <span>Kup teď cena</span>
+        <input type="number" min="0" [(ngModel)]="draft.buyNowPrice" name="buyNowPrice" />
+      </label>
+
+      <label class="auction-editor__field">
+        <span>Rezervní cena</span>
+        <input type="number" min="0" [(ngModel)]="draft.reservePrice" name="reservePrice" />
+      </label>
+
+      <label class="auction-editor__field auction-editor__field--wide">
+        <span>Délka aukce</span>
+        <select [(ngModel)]="draft.durationMinutes" name="durationMinutes">
+          <option *ngFor="let option of durationOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </label>
+    </section>
+
+    <section class="auction-editor__panel">
+      <div class="auction-editor__panelHead">
+        <strong>4. Prodejce, doprava a platba</strong>
+        <span>Informace viditelné u aukce.</span>
+      </div>
+
+      <label class="auction-editor__field">
+        <span>Jméno prodejce</span>
+        <input [(ngModel)]="draft.sellerName" name="sellerName" />
+      </label>
+
+      <label class="auction-editor__field">
+        <span>Lokalita</span>
+        <input [(ngModel)]="draft.location" name="location" />
+      </label>
+
+      <div class="auction-editor__checks auction-editor__field--wide">
+        <span>Doprava</span>
+        <button
+          type="button"
+          *ngFor="let item of shippingOptions"
+          [class.is-active]="draft.shipping[item.id]"
+          (click)="toggleShipping(item.id)"
+        >
+          {{ item.label }}
+        </button>
+      </div>
+
+      <div class="auction-editor__checks auction-editor__field--wide">
+        <span>Platba</span>
+        <button
+          type="button"
+          *ngFor="let item of paymentOptions"
+          [class.is-active]="draft.payment[item.id]"
+          (click)="togglePayment(item.id)"
+        >
+          {{ item.label }}
+        </button>
+      </div>
+    </section>
+
+    <section class="auction-editor__legal auction-editor__panel--wide">
+      <label>
+        <input type="checkbox" [(ngModel)]="draft.legalAccepted" name="legalAccepted" />
+        <span>
+          Potvrzuji, že položku mohu legálně prodat, popis odpovídá realitě,
+          nejde o padělek ani zakázané zboží a souhlasím s uložením auditního
+          záznamu publikace.
+        </span>
+      </label>
+    </section>
+
+    <div class="auction-editor__actions auction-editor__panel--wide">
+      <button type="button" class="auction-editor__draft" [disabled]="busy" (click)="saveDraft()">
+        Uložit jako draft
+      </button>
+
+      <button type="submit" [disabled]="!canSubmit">
+        <span *ngIf="busy">Publikuji…</span>
+        <span *ngIf="!busy">🚀 Publikovat aukci</span>
+      </button>
+
+      <p class="auction-editor__message" *ngIf="message && !error">{{ message }}</p>
+      <p class="auction-editor__error" *ngIf="error">{{ error }}</p>
+    </div>
+  </form>
+</section>

@@ -1,0 +1,90 @@
+<div class="auction-feed-shell">
+  <aside class="auction-feed__filters">
+    <div class="auction-feed__panelHead">
+      <span>🎯</span>
+      <div>
+        <strong>Aukce</strong>
+        <small>Aukro-like tržiště</small>
+      </div>
+    </div>
+
+    <label class="auction-feed__search">
+      <span>Hledat v aukcích</span>
+      <input
+        type="search"
+        [value]="searchQuery"
+        placeholder="PS5, retro konzole, mince..."
+        (input)="setSearch($any($event.target).value)"
+      />
+    </label>
+
+    <div class="auction-feed__filterList">
+      <button
+        type="button"
+        *ngFor="let filter of filters"
+        class="auction-feed__filter"
+        [class.is-active]="activeFilter === filter.id"
+        (click)="setFilter(filter.id)"
+      >
+        <span class="auction-feed__filterIcon">{{ filter.icon }}</span>
+        <span>
+          <strong>{{ filter.label }}</strong>
+          <small>{{ filter.hint }}</small>
+        </span>
+      </button>
+    </div>
+
+    <div class="auction-feed__sort">
+      <label for="auctionSort">Řazení</label>
+      <select
+        id="auctionSort"
+        [value]="activeSort"
+        (change)="setSort($any($event.target).value)"
+      >
+        <option *ngFor="let option of sortOptions" [value]="option.id">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+
+    <button type="button" class="auction-feed__reload" (click)="reload()">
+      ↻ Obnovit aukce
+    </button>
+  </aside>
+
+  <div class="auction-feed__main">
+    <div class="auction-feed__bar">
+      <div>
+        <strong>Živé aukce</strong>
+        <span>Reálný výpis z backendu, příhozy a Kup teď</span>
+      </div>
+
+      <div class="auction-feed__stats" *ngIf="auctions$ | async as auctions">
+        <div>
+          <strong>{{ countActive(auctions) }}</strong>
+          <span>aktivní</span>
+        </div>
+        <div>
+          <strong>{{ countEndingSoon(auctions) }}</strong>
+          <span>končí brzy</span>
+        </div>
+        <div>
+          <strong>{{ countWithBuyNow(auctions) }}</strong>
+          <span>Kup teď</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="auction-feed" *ngIf="visibleAuctions$ | async as visibleAuctions">
+      <app-auction-card
+        *ngFor="let auction of visibleAuctions; trackBy: trackAuction"
+        [auction]="auction"
+      ></app-auction-card>
+
+      <div class="auction-feed__empty" *ngIf="visibleAuctions.length === 0">
+        <strong>Žádné aukce v tomto výběru.</strong>
+        <span>Změň filtr, hledání nebo vytvoř novou aukci v editoru.</span>
+      </div>
+    </div>
+  </div>
+</div>
